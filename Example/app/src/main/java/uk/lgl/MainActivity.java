@@ -113,7 +113,7 @@ public class MainActivity extends Activity {
                 //Create shared preferences to remember user and pass
                 final SharedPreferences sharedPreferences = context.getSharedPreferences("SavePref", 0);
                 String struser = sharedPreferences.getString("User", null);
-                String strpass = sharedPreferences.getString("Pass", null);
+                
                 Boolean rememberMe = sharedPreferences.getBoolean("RememberMe", false);
 
                 //Create LinearLayout
@@ -130,37 +130,16 @@ public class MainActivity extends Activity {
                 }
                 editTextUser.setHintTextColor(Color.parseColor("#444444"));
                 editTextUser.setTextColor(Color.parseColor("#ffffff"));
-                editTextUser.setHint("User");
+                editTextUser.setHint("Input key here !");
 
-                //Create password edittext field
-                EditText editTextPass = new EditText(context);
-                if (strpass != null && !strpass.isEmpty()) {
-                    editTextPass.setText(strpass);
-                }
-                editTextPass.setHintTextColor(Color.parseColor("#444444"));
-                editTextPass.setTextColor(Color.parseColor("#ffffff"));
-                editTextPass.setHint("Password");
-                editTextPass.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD);
-
+                
                 //Create checkbox
                 CheckBox checkSaveLogin = new CheckBox(context);
                 checkSaveLogin.setPadding(0, 5, 0, 5);
-                checkSaveLogin.setTextSize(18);
+                checkSaveLogin.setTextSize(15);
                 checkSaveLogin.setChecked(rememberMe);
                 checkSaveLogin.setTextColor(Color.rgb(255, 255, 255));
                 checkSaveLogin.setText("Save Login");
-
-                //Create btnLogin
-                final Button btnLogin = new Button(context);
-                btnLogin.setBackgroundColor(Color.parseColor("#37bb83"));
-                btnLogin.setTextColor(Color.rgb(255, 255, 255));
-                btnLogin.setText("Login");
-
-                //Create btnSair
-                final Button btnClose = new Button(context);
-                btnClose.setBackgroundColor(Color.parseColor("#b6d3d9"));
-                btnClose.setTextColor(Color.rgb(255, 255, 255));
-                btnClose.setText("Close");
 
                 //Create username textView
                 final TextView textStatus = new TextView(context);
@@ -168,15 +147,29 @@ public class MainActivity extends Activity {
                 textStatus.setBackgroundColor(Color.parseColor("#0098a8"));
                 textStatus.setTextColor(Color.rgb(255, 255, 255));
                 textStatus.setTextSize(17);
-                textStatus.setText("Awaiting login!");
+                textStatus.setText("your mod version");
 
+
+                //Create btnLogin
+                final Button btnLogin = new Button(context);
+                btnLogin.setBackgroundColor(Color.parseColor("#37bb83"));
+                btnLogin.setTextColor(Color.rgb(255, 255, 255));
+                btnLogin.setText("LOGIN");
+
+                //Create btnSair
+                final Button btnClose = new Button(context);
+                btnClose.setBackgroundColor(Color.parseColor("#b6d3d9"));
+                btnClose.setTextColor(Color.rgb(255, 255, 255));
+                btnClose.setText("GET  KEY");
+
+                
                 //Add views
                 linearLayout.addView(editTextUser);
-                linearLayout.addView(editTextPass);
                 linearLayout.addView(checkSaveLogin);
+                linearLayout.addView(textStatus);
                 linearLayout.addView(btnLogin);
                 linearLayout.addView(btnClose);
-                linearLayout.addView(textStatus);
+                
 
                 //Create alertdialog
                 AlertDialog.Builder builder = new AlertDialog.Builder(context);
@@ -187,7 +180,7 @@ public class MainActivity extends Activity {
                 title.setPadding(0, 20, 0, 20);
                 title.setTextColor(Color.rgb(255, 255, 255));
                 title.setGravity(Gravity.CENTER_HORIZONTAL);
-                title.setTextSize(20);
+                title.setTextSize(17);
                 title.setTypeface(null, Typeface.BOLD);
                 title.setBackgroundColor(Color.parseColor("#006177"));
                 builder.setCustomTitle(title);
@@ -197,7 +190,7 @@ public class MainActivity extends Activity {
                 AlertDialog show = builder.show();
 
                 final EditText editText3 = editTextUser;
-                final EditText editText4 = editTextPass;
+                
                 final CheckBox checkSaveLogin2 = checkSaveLogin;
                 final AlertDialog alertDialog = show;
 
@@ -218,7 +211,7 @@ public class MainActivity extends Activity {
                     public boolean onTouch(View view, MotionEvent motionEvent) {
                         if (motionEvent.getAction() == MotionEvent.ACTION_UP) {
                             textStatus.setTextColor(Color.parseColor("#ffffff"));
-                            textStatus.setText("logging in...");
+                            textStatus.setText("Connecting to server...");
                             btnLogin.setBackgroundColor(Color.parseColor("#37bb83"));
                         } else if (motionEvent.getAction() == MotionEvent.ACTION_DOWN) {
                             btnLogin.setBackgroundColor(Color.parseColor("#299164"));
@@ -231,13 +224,13 @@ public class MainActivity extends Activity {
                 btnLogin.setOnClickListener(new View.OnClickListener() {
                     public void onClick(View view) {
                         String user = editText3.getText().toString().trim();
-                        String pass = editText4.getText().toString().trim();
+                        
 
                         boolean isChecked = checkSaveLogin2.isChecked();
                         SharedPreferences.Editor edit = sharedPreferences.edit();
                         if (isChecked) {
                             edit.putString("User", user);
-                            edit.putString("Pass", pass);
+                            
                         } else {
                             edit.clear();
                         }
@@ -246,11 +239,11 @@ public class MainActivity extends Activity {
 
                         try {
                             // String[] result = this.login(user, pass);
-                            String[] result = urlRequest(MainActivity.URL, "user=" + user + "&pass=" + pass);
+                            String[] result = urlRequest(MainActivity.URL, "user=" + user);
                             String status = result[0];
                             String hashS = result[1];
                             String MsgS = result[2];
-                            String hashL = this.MD5_Hash(user + pass);
+                            String hashL = this.MD5_Hash(user);
 
                             if (status.equals("1") && hashS.equals(hashL)) {
                                 alertDialog.dismiss();
@@ -339,7 +332,9 @@ public class MainActivity extends Activity {
 
                 btnClose.setOnClickListener(new View.OnClickListener() {
                     public void onClick(View view) {
-                        Process.killProcess(Process.myPid());
+                        //Add your Get key link.
+                        Intent intent = new Intent(Intent.ACTION_VIEW); intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK); intent.setData(Uri.parse("https://youtube.com"));
+                            context.startActivity(intent);
                     }
                 });
             }
